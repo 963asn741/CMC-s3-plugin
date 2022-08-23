@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import com.cloudops.mc.plugin.sdk.annotations.Plugin;
 import com.cloudops.mc.plugin.sdk.connector.ConnectionTest;
-import com.cloudops.mc.plugin.sdk.connector.ConnectionTest.Builder;
 import com.cloudops.mc.plugin.sdk.connector.Connector;
 import com.cloudops.mc.plugin.sdk.contexts.ConnectionContext;
 import com.cloudops.mc.plugin.sdk.models.Connection;
@@ -44,7 +43,6 @@ public class S3pConnector implements Connector {
 
    private List<Credential> getConnectionCredentials(Connection connection) {
       return Arrays.asList(
-              Credential.from(Credentials.URL, connection.getParameter(Credentials.URL)),
               Credential.from(Credentials.ACCESS_ID, connection.getParameter(Credentials.ACCESS_ID)),
               Credential.from(Credentials.SECRET_KEY, connection.getParameter(Credentials.SECRET_KEY))
               );
@@ -53,12 +51,8 @@ public class S3pConnector implements Connector {
    @Override
    public ConnectionTest testConnection(Connection connection) {
       try {
-         if (connection.getParameter(Credentials.URL) == null) {
-            return new ConnectionTest.Builder()
-                    .withErrorCode(S3Errors.MISSING_URL_PARAMETER)
-                    .addToContext("parameter", Credentials.URL)
-                    .build();
-         } else if (connection.getParameter(Credentials.ACCESS_ID) == null) {
+
+         if (connection.getParameter(Credentials.ACCESS_ID) == null) {
             return new ConnectionTest.Builder()
                     .withErrorCode(S3Errors.MISSING_ACCESS_ID_PARAMETER)
                     .addToContext("parameter", Credentials.ACCESS_ID)
@@ -70,13 +64,14 @@ public class S3pConnector implements Connector {
                     .build();
 
          } else {
-            s3pController.testConnectionToApi(connection.getParameter(Credentials.URL));
-            Builder test = new ConnectionTest.Builder()
-                    .addToContext("labelKey", "s3p.connection.success");
-            return test.build();
+            s3pController.testConnectionToApi(connection.getParameter(Credentials.ACCESS_ID), connection.getParameter(Credentials.SECRET_KEY));
+            return new ConnectionTest.Builder()
+                    .addToContext("labelKey", "s3p.connection.success")
+                    .build();
          }
       }
       catch(Exception e){
+         System.out.println(e.getMessage());
          logger.error(String.valueOf(S3Errors.CONNECTION_TEST_FAILED));
          return new ConnectionTest.Builder()
                  .withErrorCode(S3Errors.CONNECTION_TEST_FAILED)
@@ -88,10 +83,6 @@ public class S3pConnector implements Connector {
    @Override
    public List<FormElement> getParameterFormElements() {
       List<FormElement> els = new ArrayList<>();
-      els.add(Form.text(Credentials.URL)
-              .label("s3p.service_configuration.parameters.url.label")
-              .required()
-              .build());
       els.add(Form.text(Credentials.ACCESS_ID)
               .label("s3p.service_configuration.parameters.accessid.label")
               .description("s3p.service_configuration.parameters.accessid.description")
@@ -108,7 +99,6 @@ public class S3pConnector implements Connector {
    @Override
    public List<String> getParameters() {
       List<String> parameters = new ArrayList<>();
-      parameters.add(Credentials.URL);
       parameters.add(Credentials.ACCESS_ID);
       parameters.add(Credentials.SECRET_KEY);
       return parameters;
