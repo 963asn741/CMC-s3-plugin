@@ -1,11 +1,15 @@
 {
   "s3p": {
     "label": {
-      "service_provider_name": "CMCs3Plugin"
+      "service_provider_name": "CMC S3 Plugin"
     },
     "fields": {
       "name": "Name",
       "size": "Size"
+    },
+    "connection": {
+      "success": "Connection test sucessfull",
+      "error": "Connection test failed"
     },
     "service": {
       "instances": {
@@ -26,6 +30,14 @@
         "url": {
           "label": "URL",
           "description": "URL of service"
+        },
+        "accessid": {
+          "label": "Access ID",
+          "description": "Access ID of the AWS Account"
+        },
+        "secretkey": {
+          "label": "Secret Key",
+          "description": "Secret Key of the AWS Account"
         }
       }
     },
