@@ -1,0 +1,42 @@
+{
+  "s3p": {
+    "label": {
+      "service_provider_name": "CMCs3Plugin"
+    },
+    "fields": {
+      "name": "Name",
+      "size": "Size"
+    },
+    "service": {
+      "instances": {
+        "name": "Instances",
+        "operations": {
+          "create": {
+            "name": "Create"
+          }
+        }
+      }
+    },
+    "api_info": {
+    },
+    "service_configuration": {
+      "policies": {
+      },
+      "parameters": {
+        "url": {
+          "label": "URL",
+          "description": "URL of service"
+        }
+      }
+    },
+    "permissions": {
+      "instances": {
+        "label": "Instance",
+        "create": {
+          "label": "Create",
+          "description": "Create"
+        }
+      }
+    }
+  }
+}

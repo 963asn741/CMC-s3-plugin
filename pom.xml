@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.cloudops</groupId>
+    <artifactId>cloudmc-plugin-starter</artifactId>
+    <version>45.7.11</version>
+  </parent>
+  <artifactId>cloudmc-s3p-plugin</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+  <properties>
+    <cloudmc.buildName>cloudmc-s3p-plugin</cloudmc.buildName>
+    <!--Includes the following properties from the parent POM (can be overridden)-->
+    <!-- - create.sources.jar:set to `true`-->
+    <!--    + Property used by the maven-shade-plugin in the deploy profile to build fat jar -->
+  </properties>
+  <dependencies>
+    <!--Includes the following dependencies from the parent POM-->
+    <!-- - [CMC-SDK] com.cloudops:cloudmc-service-plugin-sdk -->
+    <!-- - org.springframework:spring-context -->
+    <!-- - org.slf4j:slf4j-api-->
+    <!-- - cglib:cglib-->
+    <!-- - org.spockframework:spock-core-->
+    <!-- - org.codehaus.groovy:groovy-->
+  </dependencies>
+  <build>
+    <finalName>${cloudmc.buildName}</finalName>
+    <plugins>
+      <!--Includes the following plugins from the parent POM-->
+      <!-- - org.apache.maven.plugins:maven-surefire-plugin:2.19 -->
+      <!-- - org.codehaus.gmavenplus:gmavenplus-plugin:1.5 -->
+      <!-- - org.jacoco:jacoco-maven-plugin:0.8.4 -->
+      <!-- - org.apache.maven.plugins:maven-compiler-plugin:3.3 -->
+    </plugins>
+  </build>
+  <profiles>
+    <!--Includes the 'plugin-dev' profile from the parent pom-->
+    <!-- - This profile includes the import for [CMC-Core] com.cloudops:cloudmc-dev -->
+    <!-- - It is re-included here so the IDE's maven plugin will automatically recognize it -->
+    <profile>
+      <id>plugin-dev</id>
+    </profile>
+  </profiles>
+  <repositories>
+    <repository>
+      <id>cloudmc-public</id>
+      <name>Public Releases CloudOps Repository</name>
+      <url>https://nexus.cloudops-devteam.com/repository/public-releases</url>
+    </repository>
+  </repositories>
+</project>
