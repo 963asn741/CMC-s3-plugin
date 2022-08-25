@@ -10,7 +10,7 @@ public class S3pWorkspace implements WorkspaceViewBuilder {
    @Override
    public WorkspaceView buildView(ConnectionContext connectionContext) {
       return WorkspaceView.create()
-              .tab("s3p.service.instances.name", "instances")
+              .tab("s3p.service.files.name", "object")
               .build();
    }
 }

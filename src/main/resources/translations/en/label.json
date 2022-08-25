@@ -5,19 +5,27 @@
     },
     "fields": {
       "name": "Name",
-      "size": "Size"
+      "url": "URL"
     },
     "connection": {
       "success": "Connection test sucessfull",
       "error": "Connection test failed"
     },
     "service": {
+      "files": {
+        "name": "Files"
+      },
       "instances": {
         "name": "Instances",
         "operations": {
           "create": {
             "name": "Create"
           }
+        }
+      },
+      "environment": {
+        "error-messages": {
+          "environment-name-not-unique": "The environment name you entered already exists. Try another one"
         }
       }
     },

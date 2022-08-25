@@ -75,7 +75,7 @@ public class S3pConnector implements Connector {
          logger.error(String.valueOf(S3Errors.CONNECTION_TEST_FAILED));
          return new ConnectionTest.Builder()
                  .withErrorCode(S3Errors.CONNECTION_TEST_FAILED)
-                 .addToContext("labelKey", "s3p.connection.success")
+                 .addToContext("labelKey", "s3p.connection.error")
                  .build();
       }
    }
