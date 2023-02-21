@@ -11,14 +11,13 @@
     public class Object implements ServiceEntity {
         private String id;
         private String name;
-        private URL url;
+        private String url;
 
-        public Object(String id, String name, URL url){
-            this.id=id;
-            this.name=name;
-            this.url=url;
+        public Object(String id, String name, String url) {
+            this.id = id;
+            this.name = name;
+            this.url = url;
         }
-
 
         @Override
         public String getId() {

@@ -1,6 +1,15 @@
 {
   "message": {
     "s3p": {
+      "service": {
+        "files": {
+          "operations": {
+            "delete": {
+              "confirm": "Are you sure you want to delete the files?"
+            }
+          }
+        }
+      },
       "unreachable_connection": {
         "content": "Could not establish a connection to the service",
         "type": "error"
@@ -12,7 +21,7 @@
         }
       },
       "environment": {
-        "content": "A bukcet with that name already exists",
+        "content": "A bucket with that name already exists",
         "type": "error"
       }
     }

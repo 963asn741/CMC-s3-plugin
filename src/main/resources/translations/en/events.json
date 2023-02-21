@@ -2,12 +2,12 @@
   "events": {
     "service_operation": {
       "s3p": {
-        "instances": {
+        "files": {
           "create": {
             "name": "Create instance",
             "pending": "Creating instance {request.name}",
-            "success": "Instance {request.name} was created",
-            "failure": "Unable to create instance {request.name}"
+            "success": "File {request.name} was created",
+            "failure": "Unable to create file {request.name}"
           }
         }
       }

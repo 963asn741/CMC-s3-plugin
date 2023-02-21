@@ -25,18 +25,22 @@ public class DeleteObject implements Operation<Object> {
 
     @Override
     public List<OperationError> precondition(CallerContext callerContext, String s) {
+        logger.info("PRE CONDITION IN DELETE");
         return null;
     }
 
     @Override
     public List<OperationError> validate(CallerContext callerContext, Object object) {
+        logger.info("VALIDATE IN DELETE");
         return null;
     }
 
     @Override
     public OperationResult execute(CallerContext callerContext, Object object) {
         try {
+            logger.info("INITING EXECUTE IN DELETE OBJECT");
             S3Client s3 = s3pController.getClient(callerContext.getConnection());
+            logger.info("GONNA CALL DELETE OBJECT METHOD IN CONTROLLER");
             s3pController.deleteObject(s3,callerContext.getEnvironment().getName(), object);
             return new OperationResult.Builder(callerContext).build();
         }catch (Exception e) {

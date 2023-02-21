@@ -58,10 +58,11 @@ public class S3pManagementController implements OrganizationController, UserCont
     public List<Credential> createEnvironment(EnvironmentContext environmentContext, Environment environment) throws ServiceException {
         try {
             Connection connection = environmentContext.getConnection();
-            if(s3pController.checkIfBucketExists(connection.getParameter(Credentials.ACCESS_ID), connection.getParameter(Credentials.SECRET_KEY), environment.getName())) {
+            String bucketName = s3pController.toBucketName(environment.getName());
+            if(s3pController.checkIfBucketExists(connection.getParameter(Credentials.ACCESS_ID), connection.getParameter(Credentials.SECRET_KEY), bucketName)){
                 throw new ServiceException(S3Errors.ENVIRONMENT_NAME_NOT_UNIQUE);
             }
-            else s3pController.createBucket(connection.getParameter(Credentials.ACCESS_ID), connection.getParameter(Credentials.SECRET_KEY), environment.getName());
+            else s3pController.createBucket(connection.getParameter(Credentials.ACCESS_ID), connection.getParameter(Credentials.SECRET_KEY), bucketName);
             return new ArrayList<>();
         } catch (Exception e) {
             logger.info("------------SECOND LOGGER------------");
@@ -79,7 +80,8 @@ public class S3pManagementController implements OrganizationController, UserCont
     public void deleteEnvironment(EnvironmentContext environmentContext) {
         try {
             Connection connection = environmentContext.getConnection();
-            s3pController.deleteBucket(connection.getParameter(Credentials.ACCESS_ID), connection.getParameter(Credentials.SECRET_KEY), environmentContext.getEnvironment().getName());
+            String bucketName = s3pController.toBucketName(environmentContext.getEnvironment().getName());
+            s3pController.deleteBucket(connection.getParameter(Credentials.ACCESS_ID), connection.getParameter(Credentials.SECRET_KEY), bucketName);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

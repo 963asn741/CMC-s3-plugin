@@ -5,16 +5,18 @@
     },
     "fields": {
       "name": "Name",
-      "url": "URL"
+      "url": "URL",
+      "url_description": "The URL of the files that is to be saved"
     },
     "connection": {
-      "success": "Connection test sucessfull",
+      "success": "Connection test successful",
       "error": "Connection test failed"
     },
     "service": {
       "files": {
         "name": "Files"
       },
+      "url-not-valid": "The URL you entered is not a valid url for an image",
       "instances": {
         "name": "Instances",
         "operations": {

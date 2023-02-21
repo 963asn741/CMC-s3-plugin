@@ -1,26 +1,30 @@
 package com.ttech.aws.plugin.s3p.controller;
 
 import com.cloudops.mc.plugin.sdk.models.Connection;
+import com.google.gson.JsonSyntaxException;
 import com.ttech.aws.plugin.s3p.Credentials;
-import com.ttech.aws.plugin.s3p.S3pManagementController;
 import com.ttech.aws.plugin.s3p.entity.Object;
-import io.ebean.enhance.common.SysoutMessageOutput;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.core.waiters.WaiterResponse;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.waiters.S3Waiter;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.*;
 
 @Component
 public class S3pController {
@@ -148,17 +152,87 @@ public class S3pController {
             return null;
     }
 
-    public void deleteObject(S3Client s3, String bucketName, Object object){
-        ArrayList<ObjectIdentifier> toDelete = new ArrayList<>();
-        toDelete.add(ObjectIdentifier.builder()
-                .key(object.getName())
-                .build());
-        DeleteObjectsRequest dor = DeleteObjectsRequest.builder()
-                .bucket(bucketName)
-                .delete(Delete.builder()
-                        .objects(toDelete).build())
-                .build();
-        s3.deleteObjects(dor);
-        s3.close();
+    public void deleteObject(S3Client s3, String bucketName, Object object)throws JsonSyntaxException {
+        try {
+            System.out.println(object.getName());
+            System.out.println(bucketName);
+            if(object.getName().equals("Antelope-Canyon-Wallpapers.jpg")) System.out.println("NAMES MATCH CONFIRMED");
+            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(object.getName())
+                    .build();
+            s3.deleteObject(deleteObjectRequest);
+            s3.close();
+        }catch (JsonSyntaxException e){
+            e.printStackTrace();
+        }
+    }
+
+    public boolean checkIfUrlValid(String url){
+        System.out.println(url);
+        UrlValidator urlValidator = new UrlValidator();
+        if(!urlValidator.isValid(url)) return false;
+        List extensionList = Arrays.asList(url.split("[.]"));
+        System.out.println(extensionList);
+        String extension = extensionList.get((extensionList.size())-1).toString();
+        System.out.println(extension);
+        System.out.println(extension.equals("jpg"));
+        if(!extension.equals("jpg")) return false;
+        return true;
+    }
+
+    public String toBucketName(String envName){
+        return "envnameprefix-"+envName+"-ennamesuffix";
+    }
+
+    public String toEnvironmentName(String bucketName){
+        return Arrays.asList(bucketName.split("-")).get(1);
+    }
+
+    public void createObject(S3Client s3, Object object, String bucketName, String extension) {
+        try {
+            URL url = new URL(object.getUrl());
+            InputStream is = getImageInputStream(url);
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(object.getName() + "." + extension)
+                    .acl("public-read")
+                    .build();
+            s3.putObject(putObjectRequest, RequestBody.fromInputStream(is, getContentLength(object.getUrl())));
+            is.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static Long getContentLength(String urlStr) {
+        Long contentLength = null;
+        HttpURLConnection conn = null;
+        try {
+            URL url = new URL(urlStr);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.62 Safari/537.36");
+            conn.setRequestMethod("HEAD");
+            contentLength = conn.getContentLengthLong();
+        } catch (Exception e) {
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+        return contentLength;
+    }
+
+    private static InputStream getImageInputStream(URL url) throws IOException {
+        // This user agent is for if the server wants real humans to visit
+        String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36";
+        // This socket type will allow to set user_agent
+        URLConnection con = url.openConnection();
+        // Setting the user agent
+        con.setRequestProperty("User-Agent", USER_AGENT);
+        //Getting content Length
+        int contentLength = con.getContentLength();
+        // Requesting input data from server
+        return con.getInputStream();
     }
 }
